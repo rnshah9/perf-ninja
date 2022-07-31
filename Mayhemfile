@@ -1,4 +1,4 @@
 project: perf-ninja
 target: lab
 cmds:
-  - cmd: /repo/labs/memory_bound/loop_interchange_2/build/lab @@ /dev/null
+  - cmd: /lab @@ /dev/null

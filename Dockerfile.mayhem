@@ -1,20 +1,14 @@
 FROM --platform=linux/amd64 ubuntu:22.04 as builder
 
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y vim less file locate && echo 'alias locate="updatedb && locate"' >> ~/.bashrc
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential cmake
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libbenchmark-dev
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential cmake libbenchmark-dev
 
 COPY . /repo
 WORKDIR /repo/labs/memory_bound/loop_interchange_2/build
 RUN cmake .. -DCMAKE_BUILD_TYPE=Release
 RUN make -j8
 
-RUN mkdir -p /deps
-RUN ldd /repo/labs/memory_bound/loop_interchange_2/build/lab | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'cp % /deps;'
-
-FROM ubuntu:22.04
-
-COPY --from=builder /deps /deps
-COPY --from=builder /repo/labs/memory_bound/loop_interchange_2/build/lab /repo/labs/memory_bound/loop_interchange_2/build/lab
-ENV LD_LIBRARY_PATH=/deps
+FROM ubuntu:22.04 as package
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libbenchmark-dev
+COPY --from=builder /repo/labs/memory_bound/loop_interchange_2/build/lab /

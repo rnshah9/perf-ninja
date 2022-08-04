@@ -1,5 +1,7 @@
 <p align="center"> <img src="/logo.jpg" width=200> </p>
 
+![Linux](https://github.com/dendibakh/perf-ninja/actions/workflows/CI_Linux.yml/badge.svg) ![Windows](https://github.com/dendibakh/perf-ninja/actions/workflows/CI_Win.yml/badge.svg)
+
 # Performance Ninja Class
 
 This is an online course where you can learn to find and fix low-level performance issues, for example CPU cache misses and branch mispredictions. It's all about practice. So we offer you this course in a form of lab assignments and youtube videos. You will spend at least 90% of the time analyzing performance of the code and trying to improve it.
@@ -10,12 +12,15 @@ Each lab assignment focuses on a specific performance problem and can take anywh
 
 Before you start working on lab assignments, make sure you read [Get Started page](GetStarted.md) and watch the [warmup video](https://youtu.be/jFRwAcIoLgQ). Join our [discord channel](https://discord.gg/8h6gEzgMDY) to collaborate with others.
 
+Lab assignments in this project are implemented in C++. If you're more comfortable with Rust, perf-ninja was also ported to Rust [here](https://github.com/grahamking/perf-ninja-rs), thanks to @grahamking.
+
 ## Lab assignments
 
 * [Core Bound](labs/core_bound):
   * [Vectorization 1](labs/core_bound/vectorization_1)
   * [Vectorization 2](labs/core_bound/vectorization_2)
   * [Function Inlining](labs/core_bound/function_inlining_1)
+  * [Dependency Chains 1](labs/core_bound/dep_chains_1)  
   * [Compiler Intrinsics 1](labs/core_bound/compiler_intrinsics_1)
   * [Compiler Intrinsics 2](labs/core_bound/compiler_intrinsics_2)
 * [Memory Bound](labs/memory_bound):

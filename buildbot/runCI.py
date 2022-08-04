@@ -69,6 +69,7 @@ if runner == "LinuxIntel":
   Labs["core_bound"]["function_inlining_1"] = LabParams(threshold=25.0)
   Labs["core_bound"]["compiler_intrinsics_1"] = LabParams(threshold=60.0)
   Labs["core_bound"]["compiler_intrinsics_2"] = LabParams(threshold=65.0)
+  Labs["core_bound"]["dep_chains_1"] = LabParams(threshold=60.0)
   Labs["core_bound"]["vectorization_1"] = LabParams(threshold=75.0)
   Labs["core_bound"]["vectorization_2"] = LabParams(threshold=85.0)
   Labs["bad_speculation"]["conditional_store_1"] = LabParams(threshold=70.0)
@@ -87,6 +88,7 @@ elif runner == "WinAMD":
   Labs["core_bound"]["function_inlining_1"] = LabParams(threshold=25.0)
   Labs["core_bound"]["compiler_intrinsics_1"] = LabParams(threshold=60.0)
   Labs["core_bound"]["compiler_intrinsics_2"] = LabParams(threshold=60.0)
+  Labs["core_bound"]["dep_chains_1"] = LabParams(threshold=60.0)  
   Labs["core_bound"]["vectorization_1"] = LabParams(threshold=70.0)
   Labs["core_bound"]["vectorization_2"] = LabParams(threshold=85.0)
   Labs["bad_speculation"]["conditional_store_1"] = LabParams(threshold=70.0)
@@ -186,12 +188,21 @@ def checkoutBaseline(workdir):
 
   return True
 
-def getSpeedUp(diff_report):
-  old = diff_report[0]['measurements'][0]['real_time']
-  new = diff_report[0]['measurements'][0]['real_time_other']
+def getSpeedUp(jsonMeasurement):
+  old = jsonMeasurement['real_time']
+  new = jsonMeasurement['real_time_other']
   diff = old - new
   speedup = (diff / old ) * 100
   return speedup
+
+# We can implement other aggregating function if average
+# doesn't work for some scenarios.
+# It can be customized depending on a lab.
+def getAverageSpeedup(diff_report):
+  speedups = []
+  for benchmark in diff_report:
+    speedups.append(getSpeedUp(benchmark['measurements'][0]))
+  return statistics.mean(speedups)
 
 def benchmarkSolutionOrBaseline(labBuildDir, solutionOrBaseline):
   #os.chdir(labBuildDir)
@@ -228,7 +239,7 @@ def benchmarkLab(labPath):
   for ln in output_lines:
     print(ln)
 
-  speedup = getSpeedUp(diff_report)
+  speedup = getAverageSpeedup(diff_report)
   if abs(speedup) < 2.0:
     print (bcolors.FAIL + "New version has performance similar to the baseline (<2% difference). Submission for the lab " + getLabNameStr(labPath) + " failed." + bcolors.ENDC)
     return False

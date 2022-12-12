@@ -1,0 +1,5 @@
+project: perf-ninja
+target: solution
+cmds:
+  - cmd: /fuzz_solution
+    libfuzzer: true
